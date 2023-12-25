@@ -1,4 +1,5 @@
 use std::fs;
+use std::cmp;
 
 pub fn run() {
     let res = fs::read_to_string("./inputs/input-5").unwrap();
@@ -13,7 +14,7 @@ pub fn run() {
 }
 
 fn part1(lines: Vec<String>) {
-    let seeds: Vec<u64> = lines[0]
+    let mut seeds: Vec<u64> = lines[0]
         .replace("seeds: ", "")
         .split(" ")
         .map(|x| x.parse::<u64>().unwrap())
@@ -78,7 +79,7 @@ fn part2(lines: Vec<String>) {
 
     let mut i = 0;
     while i < nums.len() {
-        seeds.push((nums[i], nums[i+1]));
+        seeds.push((nums[i], nums[i + 1]));
         i = i + 2;
     }
 
@@ -101,29 +102,40 @@ fn part2(lines: Vec<String>) {
 
     let mut lowest_location = std::u64::MAX;
 
-    for seed_range in seeds {
-        let mut i = 0;
-        let mut out: u64 = seed_range.0;
+    for (start, end) in seeds {
+        let mut out = start;
+        let mut consumed = 0;
 
-        while i < mappings.len() {
-            let map = &mappings[i];
+        while consumed < end {
+            let mut min_len = std::u64::MAX;
+            out = start + consumed;
 
-            for range in map {
-                let dst = range[0];
-                let src = range[1];
-                let len = range[2];
+            let mut i = 0;
+            while i < mappings.len() {
+                let map = &mappings[i];
 
-                if src <= out && out <= src + len {
-                    out = dst + (out - src);
-                    break;
+                for range in map {
+                    let dst = range[0];
+                    let src = range[1];
+                    let len = range[2];
+                     
+                    if src <= out && out < src + len {
+                        min_len = cmp::min(min_len, src + len - out);
+                        out = out + dst - src;
+                        break; 
+                    }
                 }
+
+                i = i + 1;
             }
 
-            i = i + 1;
-        }
+            if min_len != std::u64::MAX {
+                consumed += min_len;
+            }
 
-        if out < lowest_location {
-            lowest_location = out;
+            if out < lowest_location {
+                lowest_location = out;
+            }
         }
     }
 
