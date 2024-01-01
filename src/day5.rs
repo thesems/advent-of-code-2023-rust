@@ -14,7 +14,7 @@ pub fn run() {
 }
 
 fn part1(lines: Vec<String>) {
-    let mut seeds: Vec<u64> = lines[0]
+    let seeds: Vec<u64> = lines[0]
         .replace("seeds: ", "")
         .split(" ")
         .map(|x| x.parse::<u64>().unwrap())
