@@ -32,8 +32,8 @@ fn search(
         for &s in szs {
             for ch in s.to_string().chars() {
                 state.push(ch);
-                state.push('-');
             }
+            state.push('-');
         }
         state
     };
@@ -111,7 +111,7 @@ fn solve(lines: Vec<String>) {
 
         {
             // part 1
-            result_1 += search(springs.clone(), sizes.clone(), &mut HashMap::new());
+            result_1 += search(springs.clone(), sizes.clone(), &mut states);
         }
         {
             // part 2
