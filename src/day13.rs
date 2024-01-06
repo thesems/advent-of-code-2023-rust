@@ -37,7 +37,7 @@ fn solve(lines: Vec<String>) {
     let mut result_1 = 0;
     let mut result_2 = 0;
 
-    for (i, line) in lines.iter().enumerate() {
+    for line in lines.iter() {
         if line == "" {
             result_1 += 100 * reflection_row(&block, 0);
             result_2 += 100 * reflection_row(&block, 1);

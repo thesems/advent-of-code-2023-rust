@@ -103,7 +103,7 @@ fn part2(lines: Vec<String>) {
     let mut lowest_location = std::u64::MAX;
 
     for (start, end) in seeds {
-        let mut out = start;
+        let mut out;
         let mut consumed = 0;
 
         while consumed < end {
