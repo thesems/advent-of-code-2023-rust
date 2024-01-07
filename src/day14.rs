@@ -106,16 +106,6 @@ fn tilt_horizontally(arr: &mut Vec<Vec<char>>, direction: Direction) {
     }
 }
 
-fn print(arr: &Vec<Vec<char>>) {
-    for row in arr {
-        for ch in row {
-            print!("{ch}");
-        }
-        println!("");
-    }
-    println!("");
-}
-
 fn part1(lines: Vec<String>) {
     let mut arr: Vec<Vec<char>> = vec![];
 
