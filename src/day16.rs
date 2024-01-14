@@ -1,4 +1,4 @@
-use std::{collections::HashSet, fs, io::IntoInnerError};
+use std::{collections::HashSet, fs};
 
 pub fn run() {
     let res = fs::read_to_string("./inputs/input-16").unwrap();
