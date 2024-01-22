@@ -1,4 +1,4 @@
-use std::{fs, cmp, isize};
+use std::{fs, isize};
 
 #[derive(Clone, Debug)]
 struct Vertex {
