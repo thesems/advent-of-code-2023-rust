@@ -49,7 +49,7 @@ impl Brick {
         if !intersect {
             return false;
         }
-        
+
         self.z1 <= brick.z2 && brick.z1 <= self.z2
     }
 }
@@ -79,7 +79,8 @@ pub fn run() {
         ));
     }
 
-    part1(&mut bricks);
+    // part1(&mut bricks);
+    part2(&mut bricks);
 }
 
 fn part1(bricks: &mut Vec<Brick>) {
@@ -131,4 +132,63 @@ fn part1(bricks: &mut Vec<Brick>) {
     }
 
     println!("Result part 1: {}", deletable.len());
+}
+
+fn part2(bricks: &mut Vec<Brick>) {
+    bricks.sort_by_key(|x| x.z1);
+
+    for i in 0..bricks.len() {
+        let (at_rest, falling) = bricks.split_at_mut(i);
+
+        let brick = falling.iter_mut().next().unwrap();
+        loop {
+            if brick.z1 == 1 {
+                break;
+            }
+            brick.z1 -= 1;
+            brick.z2 -= 1;
+
+            let mut collided = false;
+            for other in at_rest.iter_mut() {
+                if brick.intersect(other) {
+                    brick.supported_by.push(other.id);
+                    other.supporting.push(brick.id);
+                    collided = true;
+                }
+            }
+
+            if collided {
+                brick.z1 += 1;
+                brick.z2 += 1;
+                break;
+            }
+        }
+    }
+
+    let mut result = 0;
+    for i in 0..bricks.len() {
+        let mut to_fall = HashSet::new();
+        to_fall.insert(bricks[i].id);
+
+        let mut supports = vec![];
+        supports.extend(bricks[i].supporting.clone());
+
+        while !supports.is_empty() {
+            let s = supports.pop().unwrap();
+            let supported_elsewhere = bricks
+                .iter()
+                .any(|x| !to_fall.contains(&x.id) && x.supporting.contains(&s));
+
+            if !supported_elsewhere {
+                let res = to_fall.insert(s);
+                if res {
+                    let new_items = bricks.iter().find(|x| x.id == s).unwrap().supporting.clone();
+                    supports.extend(new_items);
+                }
+            }
+        }
+        result += to_fall.len() - 1;
+    }
+
+    println!("Result part 2: {}", result);
 }
