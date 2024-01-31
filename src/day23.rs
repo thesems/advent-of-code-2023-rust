@@ -17,10 +17,11 @@ enum Tile {
 struct Coord {
     x: usize,
     y: usize,
+    next: Vec<Coord>,
 }
 impl Coord {
     fn new(x: usize, y: usize) -> Self {
-        Self { x, y }
+        Self { x, y, next: vec![] }
     }
     fn get_neighbours(&self) -> Vec<Coord> {
         let mut neighbours: Vec<Coord> = Vec::new();
@@ -36,6 +37,7 @@ impl Coord {
 #[derive(Debug)]
 struct Map {
     values: HashMap<Coord, Tile>,
+    edges: Vec<(Coord, Coord)>,
     start: Coord,
     end: Coord,
     width: usize,
@@ -51,6 +53,7 @@ impl Map {
     ) -> Self {
         Self {
             values,
+            edges: vec![],
             start,
             end,
             width,
@@ -63,10 +66,11 @@ impl Map {
         }
         return true;
     }
+    fn compress(&mut self) {}
 }
 
 pub fn run() {
-    let res = fs::read_to_string("./inputs/example-23").unwrap();
+    let res = fs::read_to_string("./inputs/input-23").unwrap();
     let lines: Vec<String> = res
         .split("\n")
         .filter(|x| !x.is_empty())
@@ -88,7 +92,14 @@ pub fn run() {
                 '^' => Tile::SlopeUp,
                 x => panic!("Unhandled char: {x}"),
             };
-            values.insert(Coord::new(x, y), tile);
+
+            // TODO:
+            // count neighbours, if > 2 => mark as junction
+            // later, use DFS to figure out lengths and add to edges
+            // build a new grid
+
+            let coord = Coord::new(x, y);
+            values.insert(coord, tile);
 
             if x > width {
                 width = x;
@@ -113,6 +124,7 @@ pub fn run() {
 
 fn search(coord: Coord, steps: usize, map: &Map, mut visited: HashSet<Coord>) -> usize {
     if coord == map.end {
+        println!("{steps}");
         return steps;
     }
     if visited.contains(&coord) {
